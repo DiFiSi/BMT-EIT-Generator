@@ -1,9 +1,10 @@
 n = (1:100)';
 
 % Bounds
-Qmax = 550;
-Qmin = 0;
-Vmax = mean([13.35,13.19,15.20,10.56,8.71]);
+Qmax = 35; % 550; % Qmax = 50;
+Qmin = 0; % Qmin = 0;
+SV = mean([13.35,13.19,15.20,10.56,8.71]) * 0.5;
+Vbase = 0.10; % fraction of maximum
 
 % Load data
 data = readmatrix("QLarge.txt");
@@ -14,12 +15,12 @@ QOrig = data(:,2); QOrig = normalize(QOrig,'range') * (Qmax - Qmin) + Qmin;
 Q = interp1(tOrig,QOrig,n);
 
 % Integrate into Volume
-V = cumtrapz(n,Q - mean(Q)) / length(n); 
-V = V - min(V);
+V = normalize(cumtrapz(n,Q - mean(Q)) / length(n),'range'); 
+V = V * SV + SV * Vbase;
 
 % Plotting
 figure;
-plot(n,[Q,V])
+plot(n,[Q,V]);
 
 % Save template
 save('Qlarge.mat','Q');
