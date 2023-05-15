@@ -1,10 +1,12 @@
+% fs = 50;
 n = (1:100)';
+% t = (n - 1) / fs;
 
 % Bounds
 Qmax = 25; % 450; % Qmax = 50;
 Qmin = 0; % Qmin = 25;
-SV = mean([11.55,15.00,12.70,10.83,11.92]) * 0.5;
-Vbase = 0.075; % fraction of maximum
+Vmax = mean([11.55,15.00,12.70,10.83,11.92]);
+Vbase = 0.7; % fraction of maximum
 
 % Load flow data
 data = readmatrix("QMed.txt");
@@ -16,7 +18,11 @@ Q = interp1(tOrig,QOrig,n);
 
 % Integrate into Volume
 V = normalize(cumtrapz(n,Q - mean(Q)) / length(n),'range'); 
-V = V * SV + SV * Vbase;
+V = V * (1 - Vbase) * Vmax + Vmax * Vbase;
+
+% Reobtain Q
+Q = diff(V);
+Q = [Q(1); Q] - min(Q);
 
 % Plotting
 figure;

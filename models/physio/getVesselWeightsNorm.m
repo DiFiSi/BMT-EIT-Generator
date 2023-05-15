@@ -1,4 +1,4 @@
-function [rhoLargeFull,rhoMedFull,rhoSmallFull] = getVesselWeightsNorm(dists,nLungElems,nVessels)
+function [nLargeElemFull,rhoLargeFull,nMedElemFull,rhoMedFull,nSmallElemFull,rhoSmallFull] = getVesselWeightsNorm(dists,nLungElems,nVessels)
     emptyIdxs = nLungElems == 0 | isnan(nLungElems) | isnan(dists);
     fullDists = dists;
     fullDists(emptyIdxs) = [];
@@ -8,18 +8,25 @@ function [rhoLargeFull,rhoMedFull,rhoSmallFull] = getVesselWeightsNorm(dists,nLu
 
     % Large
     rhoLarge = normpdf(wX,0,0.25);
-    rhoLarge = rhoLarge ./ sum(rhoLarge,'omitnan');
-    rhoLarge = nVessels(1) * rhoLarge;
 
     % Medium
     rhoMed = normpdf(wX,0.5,0.15);
-    rhoMed = rhoMed ./ sum(rhoMed,'omitnan');
-    rhoMed = nVessels(2) * rhoMed;
 
     % Small
     rhoSmall = normpdf(wX,1,0.25);
-    rhoSmall = rhoSmall ./ sum(rhoSmall,'omitnan');
-    rhoSmall = nVessels(3) * rhoSmall;
+    
+    % Relative density of vessels
+    rhoSum = sum([rhoLarge,rhoMed,rhoSmall],2);
+    rhoLarge = rhoLarge ./ rhoSum;
+    rhoMed = rhoMed ./ rhoSum;
+    rhoSmall = rhoSmall ./ rhoSum;
+    
+    rhoLargeFull = zeros(size(dists));
+    rhoLargeFull(~emptyIdxs) = rhoLarge;
+    rhoMedFull = zeros(size(dists));
+    rhoMedFull(~emptyIdxs) = rhoMed;
+    rhoSmallFull = zeros(size(dists));
+    rhoSmallFull(~emptyIdxs) = rhoSmall;
     
 %     figure;
 %     plot(wX,[rhoLarge,rhoMed,rhoSmall],'.','MarkerSize',10);
@@ -28,16 +35,20 @@ function [rhoLargeFull,rhoMedFull,rhoSmallFull] = getVesselWeightsNorm(dists,nLu
 %     legend(["Large","Medium","Small"]);
     
     % Get N/Nelems
-    rhoLarge = rhoLarge ./ fullNLungElems;
-    rhoMed = rhoMed ./ fullNLungElems;
-    rhoSmall = rhoSmall ./ fullNLungElems;
+    nLarge = nVessels(1) * (rhoLarge ./ sum(rhoLarge,'omitnan'));
+    nMed = nVessels(2) * (rhoMed ./ sum(rhoMed,'omitnan'));
+    nSmall = nVessels(3) * (rhoSmall ./ sum(rhoSmall,'omitnan'));
     
-    rhoLargeFull = zeros(size(dists));
-    rhoLargeFull(~emptyIdxs) = rhoLarge;
-    rhoMedFull = zeros(size(dists));
-    rhoMedFull(~emptyIdxs) = rhoMed;
-    rhoSmallFull = zeros(size(dists));
-    rhoSmallFull(~emptyIdxs) = rhoSmall;
+    nLargeElem = nLarge ./ fullNLungElems;
+    nMedElem = nMed ./ fullNLungElems;
+    nSmallElem = nSmall ./ fullNLungElems;
+    
+    nLargeElemFull = zeros(size(dists));
+    nLargeElemFull(~emptyIdxs) = nLargeElem;
+    nMedElemFull = zeros(size(dists));
+    nMedElemFull(~emptyIdxs) = nMedElem;
+    nSmallElemFull = zeros(size(dists));
+    nSmallElemFull(~emptyIdxs) = nSmallElem;
     
 %     figure;
 %     plot(wX,[rhoLarge,rhoMed,rhoSmall],'.','MarkerSize',10);

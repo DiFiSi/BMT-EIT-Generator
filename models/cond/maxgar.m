@@ -1,5 +1,5 @@
 function sigma = maxgar(sigmaBkg,sigmaInc,fi)
-    Nk = [0.5,0.5,0];
+    Nk = [0.5;0.5;0];
     
     num = (1 / 3) .* fi .* (sigmaInc - sigmaBkg) .*...
           (sigmaBkg ./ (sigmaBkg + Nk(1) .* (sigmaInc - sigmaBkg)) +...
@@ -13,4 +13,3 @@ function sigma = maxgar(sigmaBkg,sigmaInc,fi)
       
     sigma = sigmaBkg + (num ./ den);
 end
-
