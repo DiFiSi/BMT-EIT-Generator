@@ -151,8 +151,8 @@ sphR = @(vol,ratio) (3 * vol / (4 * pi)) .^ (1 / 3);
 %   2 - mandVent
 
 [sigCard0,sigCard90,sigResp] = getSigs(phi,phiCard,phiResp,vVentrTemp,...
-                                                           [vLargeTemp,qLargeTemp,vMedTemp,qMedTemp,vSmallTemp,qSmallTemp],...
-                                                           [spontVentTemp,mandVentTemp]);
+                                       [vLargeTemp,qLargeTemp,vMedTemp,qMedTemp,vSmallTemp,qSmallTemp],...
+                                       [spontVentTemp,mandVentTemp]);
 
 nSamples = length(sigCard0);                                                    
 n = (1:nSamples)';
@@ -204,38 +204,38 @@ botBound = inline(botFun(centLlung(3)),'x','y','z');
 bot = logical(elem_select(fmdl, botBound)); 
 
 %% Debug vars
-% refHeart = [1.5,4,18];
-% refLungEarly = [7,0,12.5];
-% refLungLate = [10,0,12.5];
+refHeart = [1.5,4,18];
+refLungEarly = [7,0,12.5];
+refLungLate = [10,0,12.5];
 
-% [xFMDL,yFMDL,zFMDL] = getCoords(fmdl);
-% gridX = mean(xFMDL,2);
-% gridY = mean(yFMDL,2);
-% gridZ = mean(zFMDL,2);
+[xFMDL,yFMDL,zFMDL] = getCoords(fmdl);
+gridX = mean(xFMDL,2);
+gridY = mean(yFMDL,2);
+gridZ = mean(zFMDL,2);
 
-% [~,heartIdx] = min(sqrt((refHeart(1) - gridX) .^ 2 + (refHeart(2) - gridY) .^ 2 + (refHeart(3) - gridZ) .^ 2));
-% [~,lungEarlyIdx] = min(sqrt((refLungEarly(1) - gridX) .^ 2 + (refLungEarly(2) - gridY) .^ 2 + (refLungEarly(3) - gridZ) .^ 2));
-% [~,lungLateIdx] = min(sqrt((refLungLate(1) - gridX) .^ 2 + (refLungLate(2) - gridY) .^ 2 + (refLungLate(3) - gridZ) .^ 2));
+[~,heartIdx] = min(sqrt((refHeart(1) - gridX) .^ 2 + (refHeart(2) - gridY) .^ 2 + (refHeart(3) - gridZ) .^ 2));
+[~,lungEarlyIdx] = min(sqrt((refLungEarly(1) - gridX) .^ 2 + (refLungEarly(2) - gridY) .^ 2 + (refLungEarly(3) - gridZ) .^ 2));
+[~,lungLateIdx] = min(sqrt((refLungLate(1) - gridX) .^ 2 + (refLungLate(2) - gridY) .^ 2 + (refLungLate(3) - gridZ) .^ 2));
 
-% VbloodSig = [];
-% VairSig = [];
-% sigmaBloodSig = [];
-% sigmaLungVentSig = [];
-% fiSig = [];
-% NelemsSig = [];
-% sigmaLungSig = [];
-% sigmaLargeSig = [];
-% sigmaMedSig = [];
-% sigmaSmallSig = [];
-% rhoLargeSig = [];
-% rhoMedSig = [];
-% rhoSmallSig = [];
-% velLargeSig = [];
-% velMedSig = [];
-% velSmallSig = [];
-% radLargeSig = [];
-% radMedSig = [];
-% radSmallSig = [];
+VbloodSig = [];
+VairSig = [];
+sigmaBloodSig = [];
+sigmaLungVentSig = [];
+fiSig = [];
+NelemsSig = [];
+sigmaLungSig = [];
+sigmaLargeSig = [];
+sigmaMedSig = [];
+sigmaSmallSig = [];
+rhoLargeSig = [];
+rhoMedSig = [];
+rhoSmallSig = [];
+velLargeSig = [];
+velMedSig = [];
+velSmallSig = [];
+radLargeSig = [];
+radMedSig = [];
+radSmallSig = [];
 
 %% Build signal with spontaenous ventilation
 tSize = length(t);
@@ -305,112 +305,143 @@ for i = delOffset + 1:tSize
     % Use mixing formula to calculate conductivity of FEM element
     sigmaLungNow = maxgar(sigmaLungVentNow,sigmaBloodNow,fi);
     
-%     VbloodSig = [VbloodSig; [VbloodNow(heartIdx),VbloodNow(lungEarlyIdx),VbloodNow(lungLateIdx)]];
-%     VairSig = [VairSig; [VairNow(heartIdx),VairNow(lungEarlyIdx),VairNow(lungLateIdx)]];
-%     fiSig = [fiSig; [fi(heartIdx),fi(lungEarlyIdx),fi(lungLateIdx)]];
-%     NelemsSig = [NelemsSig; [sum(llungIdxs),sum(rlungIdxs),sum(myocIdxs),sum(chbrIdxs)]];
+    VbloodSig = [VbloodSig; [VbloodNow(heartIdx),VbloodNow(lungEarlyIdx),VbloodNow(lungLateIdx)]];
+    VairSig = [VairSig; [VairNow(heartIdx),VairNow(lungEarlyIdx),VairNow(lungLateIdx)]];
+    fiSig = [fiSig; [fi(heartIdx),fi(lungEarlyIdx),fi(lungLateIdx)]];
+    NelemsSig = [NelemsSig; [sum(llungIdxs),sum(rlungIdxs),sum(myocIdxs),sum(chbrIdxs)]];
+    
+    sigmaBloodSig = [sigmaBloodSig; [sigmaBloodNow(heartIdx),sigmaBloodNow(lungEarlyIdx),sigmaBloodNow(lungLateIdx)]];
+    sigmaLungSig = [sigmaLungSig; [sigmaLungNow(heartIdx),sigmaLungNow(lungEarlyIdx),sigmaLungNow(lungLateIdx)]];
+    sigmaLungVentSig = [sigmaLungVentSig; [sigmaLungVentNow(i),sigmaLungVentNow(i),sigmaLungVentNow(i)]];
+
+    sigmaLargeSig = [sigmaLargeSig; [sigmaLarge(heartIdx),sigmaLarge(lungEarlyIdx),sigmaLarge(lungLateIdx)]];
+    sigmaMedSig = [sigmaMedSig; [sigmaMed(heartIdx),sigmaMed(lungEarlyIdx),sigmaMed(lungLateIdx)]];
+    sigmaSmallSig = [sigmaSmallSig; [sigmaSmall(heartIdx),sigmaSmall(lungEarlyIdx),sigmaSmall(lungLateIdx)]];
+    
+    rhoLargeSig = [rhoLargeSig; [nLargeElem(heartIdx),nLargeElem(lungEarlyIdx),nLargeElem(lungLateIdx)]];
+    rhoMedSig = [rhoMedSig; [nMedElem(heartIdx),nMedElem(lungEarlyIdx),nMedElem(lungLateIdx)]];
+    rhoSmallSig = [rhoSmallSig; [nSmallElem(heartIdx),nSmallElem(lungEarlyIdx),nSmallElem(lungLateIdx)]];
+    
+    velLargeSig = [velLargeSig; [velLarge(heartIdx),velLarge(lungEarlyIdx),velLarge(lungLateIdx)]];
+    velMedSig = [velMedSig; [velMed(heartIdx),velMed(lungEarlyIdx),velMed(lungLateIdx)]];
+    velSmallSig = [velSmallSig; [velSmall(heartIdx),velSmall(lungEarlyIdx),velSmall(lungLateIdx)]];
+    
+    radLargeSig = [radLargeSig; [radLarge(heartIdx),radLarge(lungEarlyIdx),radLarge(lungLateIdx)]];
+    radMedSig = [radMedSig; [radMed(heartIdx),radMed(lungEarlyIdx),radMed(lungLateIdx)]];
+    radSmallSig = [radSmallSig; [radSmall(heartIdx),radSmall(lungEarlyIdx),radSmall(lungLateIdx)]];
+    
+%     % MIX
+%     imgd.elem_data = compOffset     + ...
+%                      + sigmaBkg       * bkgIdxs...
+%                      + sigmaLungNow   .* llungIdxs...
+%                      + sigmaLungNow   .* rlungIdxs...
+%                      + sigmaBlood     * chbrIdxs...
+%                      + sigmaMuscle    * myocIdxs;
+%                           
+%     % Get voltages
+%     vi = fwd_solve(imgd);
+%     vMIX(:,i - delOffset) = vi.meas;
 %     
-%     sigmaBloodSig = [sigmaBloodSig; [sigmaBloodNow(heartIdx),sigmaBloodNow(lungEarlyIdx),sigmaBloodNow(lungLateIdx)]];
-%     sigmaLungSig = [sigmaLungSig; [sigmaLungNow(heartIdx),sigmaLungNow(lungEarlyIdx),sigmaLungNow(lungLateIdx)]];
-%     sigmaLungVentSig = [sigmaLungVentSig; [sigmaLungVentNow(i),sigmaLungVentNow(i),sigmaLungVentNow(i)]];
-% 
-%     sigmaLargeSig = [sigmaLargeSig; [sigmaLarge(heartIdx),sigmaLarge(lungEarlyIdx),sigmaLarge(lungLateIdx)]];
-%     sigmaMedSig = [sigmaMedSig; [sigmaMed(heartIdx),sigmaMed(lungEarlyIdx),sigmaMed(lungLateIdx)]];
-%     sigmaSmallSig = [sigmaSmallSig; [sigmaSmall(heartIdx),sigmaSmall(lungEarlyIdx),sigmaSmall(lungLateIdx)]];
+%     % VRS
+%     sigmaLungNow = sigmaLungVentNow;
+%     imgd.elem_data = compOffset     + ...
+%                      + sigmaBkg       * (bkgIdxs | chbrIdxs | myocIdxs)...
+%                      + sigmaLungNow   .* llungIdxs...
+%                      + sigmaLungNow   .* rlungIdxs;
+%                
+%     % Get voltages
+%     vi = fwd_solve(imgd);
+%     vVRS(:,i - delOffset) = vi.meas;
 %     
-%     rhoLargeSig = [rhoLargeSig; [nLargeElem(heartIdx),nLargeElem(lungEarlyIdx),nLargeElem(lungLateIdx)]];
-%     rhoMedSig = [rhoMedSig; [nMedElem(heartIdx),nMedElem(lungEarlyIdx),nMedElem(lungLateIdx)]];
-%     rhoSmallSig = [rhoSmallSig; [nSmallElem(heartIdx),nSmallElem(lungEarlyIdx),nSmallElem(lungLateIdx)]];
+%     % CRS
+%     % Assume no lung movement
+%     rlungDelta = 0;
+%     centL = centLlung + rlungDelta;
+%     centR = centRlung + rlungDelta;
+%     selectLlung = inline(eliFun(centL,rLungMax),'x','y','z');
+%     selectRlung = inline(eliFun(centR,rLungMax),'x','y','z');
 %     
-%     velLargeSig = [velLargeSig; [velLarge(heartIdx),velLarge(lungEarlyIdx),velLarge(lungLateIdx)]];
-%     velMedSig = [velMedSig; [velMed(heartIdx),velMed(lungEarlyIdx),velMed(lungLateIdx)]];
-%     velSmallSig = [velSmallSig; [velSmall(heartIdx),velSmall(lungEarlyIdx),velSmall(lungLateIdx)]];
+%     % Get new indices of all organs and background
+%     llungIdxs = (elem_select(imgd.fwd_model, selectLlung) & bot) & ~myocIdxs;
+%     rlungIdxs = (elem_select(imgd.fwd_model, selectRlung) & bot) & ~myocIdxs;
+%     bkgIdxs = ~(llungIdxs | rlungIdxs | myocIdxs | chbrIdxs); 
 %     
-%     radLargeSig = [radLargeSig; [radLarge(heartIdx),radLarge(lungEarlyIdx),radLarge(lungLateIdx)]];
-%     radMedSig = [radMedSig; [radMed(heartIdx),radMed(lungEarlyIdx),radMed(lungLateIdx)]];
-%     radSmallSig = [radSmallSig; [radSmall(heartIdx),radSmall(lungEarlyIdx),radSmall(lungLateIdx)]];
-    
-    % MIX
-    imgd.elem_data = compOffset     + ...
-                     + sigmaBkg       * bkgIdxs...
-                     + sigmaLungNow   .* llungIdxs...
-                     + sigmaLungNow   .* rlungIdxs...
-                     + sigmaBlood     * chbrIdxs...
-                     + sigmaMuscle    * myocIdxs;
-                          
-    % Get voltages
-    vi = fwd_solve(imgd);
-    vMIX(:,i - delOffset) = vi.meas;
-    
-    % VRS
-    sigmaLungNow = sigmaLungVentNow;
-    imgd.elem_data = compOffset     + ...
-                     + sigmaBkg       * (bkgIdxs | chbrIdxs | myocIdxs)...
-                     + sigmaLungNow   .* llungIdxs...
-                     + sigmaLungNow   .* rlungIdxs;
-               
-    % Get voltages
-    vi = fwd_solve(imgd);
-    vVRS(:,i - delOffset) = vi.meas;
-    
-    % CRS
-    % Assume no lung movement
-    rlungDelta = 0;
-    centL = centLlung + rlungDelta;
-    centR = centRlung + rlungDelta;
-    selectLlung = inline(eliFun(centL,rLungMax),'x','y','z');
-    selectRlung = inline(eliFun(centR,rLungMax),'x','y','z');
-    
-    % Get new indices of all organs and background
-    llungIdxs = (elem_select(imgd.fwd_model, selectLlung) & bot) & ~myocIdxs;
-    rlungIdxs = (elem_select(imgd.fwd_model, selectRlung) & bot) & ~myocIdxs;
-    bkgIdxs = ~(llungIdxs | rlungIdxs | myocIdxs | chbrIdxs); 
-    
-    % No air volume in mixing formula
-    sigmaLungNow = sigmaBloodNow;
-    
-    imgd.elem_data = compOffset     + ...
-                   + sigmaBkg       * bkgIdxs...
-                   + sigmaLungNow   .* llungIdxs...
-                   + sigmaLungNow   .* rlungIdxs ...
-                   + sigmaBlood     * chbrIdxs...
-                   + sigmaMuscle    * myocIdxs;
-               
-    % Get voltages
-    vi = fwd_solve(imgd);
-    vCRS(:,i - delOffset) = vi.meas;
+%     % No air volume in mixing formula
+%     sigmaLungNow = sigmaBloodNow;
+%     
+%     imgd.elem_data = compOffset     + ...
+%                    + sigmaBkg       * bkgIdxs...
+%                    + sigmaLungNow   .* llungIdxs...
+%                    + sigmaLungNow   .* rlungIdxs ...
+%                    + sigmaBlood     * chbrIdxs...
+%                    + sigmaMuscle    * myocIdxs;
+%                
+%     % Get voltages
+%     vi = fwd_solve(imgd);
+%     vCRS(:,i - delOffset) = vi.meas;
     
     disp(["Sample " + num2str(i) + "/" + num2str(tSize)]);
 end
 
 %% Relevant debug graphs
-% figure;
-% plot([VairSig(:,3),VbloodSig(:,2)]);
-% hold on; plot(Vmyoc);
-% legend(["Air","Blood","Myocardium"])
-% title("Air and blood volumes in single lung element");
-% 
-% figure;
-% plot([VairSig(:,3),rhoMedSig(:,2)]);
-% legend(["VAir","$\rho_{med}$"])
-% title("Air volume and number of medium sized lung vessels");
-% 
-% figure;
-% plot([rhoLargeSig(:,2),rhoMedSig(:,2),rhoSmallSig(:,2)]);
-% legend(["$\rho_{large}$","$\rho_{med}$","$\rho_{small}$"])
-% title("Number of differently-sized lung vessels in element");
-% 
-% figure;
-% plot([sigmaMedSig(:,2) - sigmaBlood,velMedSig(:,2),radSmallSig(:,2)]);
-% legend(["$\Delta\sigma_{med}$","$v_{med}$","$r_{med}$"])
-% title("Visser cond. change with blood velocity and radius");
-% 
-% figure;
-% plot(sigmaLungSig(:,2)); hold on;
-% plot(VairSig(:,3));
-% plot(sigmaBloodSig(:,2));
-% legend(["$\Delta\sigma_{lung}$","$\Delta\sigma_{vent}$","$\Delta\sigma_{blood}$"])
-% title("Visser cond. change with blood velocity and radius");
+% Figure settings
+set(0,'DefaultAxesFontSize',11); 
+set(0,'DefaultFigureColor','w');
+set(0,'defaulttextinterpreter','tex');
+set(0, 'DefaultAxesFontName', 'arial');
+set(0,'DefaultFigureWindowStyle','normal');
+
+% Time axis
+fs = 50;
+nSamples = size(sigmaLungSig,1);
+tTest = (0:nSamples - 1)' / fs;
+
+% Lung conductivities
+figCond = figure;
+
+plot(tTest, sigmaLungSig(:,2),'-','Color',[252, 161, 3] / 255); hold on;
+plot(tTest, sigmaLungVentSig(:,2),'-','Color','b');
+plot(tTest, sigmaBloodSig(:,2),'-','Color','r');
+ylabel("\sigma [S/m]");
+
+yyaxis right;
+plot(tTest, fiSig(:,2),'-','Color','k');
+ylabel("Volume fraction [%]");
+
+xlabel("Time [s]");
+
+lgd = legend(["$\sigma_{MIX}$","$\sigma_{VRS}$","$\sigma_{CRS}$","$\frac{V_{blood}}{V_{blood} + V_{air}}$"]);
+lgd.FontSize = 11;
+
+set(figCond,'Units', 'Centimeters');
+set(figCond,'Position', [0 0 11.8533 10]);
+
+% Heart and Lung volumes
+perfColors = [153 0  0;
+              255 43 0;
+              255 128 0;
+              255 205 0] / 255;
+
+figVol = figure;
+
+plot(tTest, Vchbr(1:nSamples),'.-','Color','r'); hold on;
+plot(tTest, Vlung(1:nSamples),'.-','Color','b');
+ylabel("Volume Heart and Lung [cm^3]");
+
+yyaxis right;
+plot(tTest, VLarge(1:nSamples),'-','Color',perfColors(1,:)); hold on;
+plot(tTest, VMed(1:nSamples) - 2,'-','Color',perfColors(2,:));
+plot(tTest, VSmall(1:nSamples),'-','Color',perfColors(3,:));
+
+ylabel("Volume Vessels [cm^3]");
+
+xlabel("Time [s]");
+
+lgd = legend(["Heart Chamber","Lung","Large Vessel","Medium Vessel", "Small Vessel"]);
+lgd.FontSize = 11;
+
+set(figVol,'Units', 'Centimeters');
+set(figVol,'Position', [0 0 11.8533 10]);
 
 %% Reconstruct and save
 % Remove NaNs

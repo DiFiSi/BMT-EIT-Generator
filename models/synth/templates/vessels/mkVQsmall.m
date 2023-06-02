@@ -3,15 +3,15 @@ n = (1:100)';
 % t = (n - 1) / fs;
 
 % Bounds
-Qmax = 5; % 250; % Qmax = 1;
-Qmin = 0; % Qmin = 50;
-Vmax = mean([3.47,3.68,4.50,7.56,7.84]);
+% Qmax = 5; % 250; % Qmax = 1;
+% Qmin = 0; % Qmin = 50;
+Vmax = mean([3.47,3.68,4.50,7.56,7.84]) * 0.5;
 Vbase = 0.7; % fraction of maximum
 
 % Load flow data
 data = readmatrix("QSmall.txt");
 tOrig = normalize(1:length(data),'range') * 99 + 1;
-QOrig = data(:,1); QOrig = normalize(QOrig,'range') * (Qmax - Qmin) + Qmin;
+QOrig = data(:,1); QOrig = normalize(QOrig,'range'); % * (Qmax - Qmin) + Qmin;
 
 % Uniformize data
 Q = interp1(tOrig,QOrig,n);
@@ -26,7 +26,12 @@ Q = [Q(1); Q] - min(Q);
 
 % Plotting
 figure;
-plot(n,[Q,V])
+yyaxis left;
+plot(n,Q);
+ylabel("Flow [cm3/s]")
+yyaxis right;
+plot(n,V);
+ylabel("Volume [cm3]")
 
 % Save template
 save('Qsmall.mat','Q');
