@@ -291,17 +291,17 @@ for i = delOffset + 1:tSize
     % Use mixing formula to calculate conductivity of FEM element
     sigmaLungNow = maxgar(sigmaLungVentNow,sigmaBloodNow,fi);
     
-%     % Assign conductivities to FEM elements
-%     imgd.elem_data = compOffset       + ...
-%                      + sigmaBkg       * bkgIdxs...
-%                      + sigmaLungNow   .* llungIdxs...
-%                      + sigmaLungNow   .* rlungIdxs...
-%                      + sigmaBlood     * chbrIdxs...
-%                      + sigmaMuscle    * myocIdxs;
-%                           
-%     % Get voltages
-%     vi = fwd_solve(imgd);
-%     vMIX(:,i - delOffset) = vi.meas;
+    % Assign conductivities to FEM elements
+    imgd.elem_data = compOffset       + ...
+                     + sigmaBkg       * bkgIdxs...
+                     + sigmaLungNow   .* llungIdxs...
+                     + sigmaLungNow   .* rlungIdxs...
+                     + sigmaBlood     * chbrIdxs...
+                     + sigmaMuscle    * myocIdxs;
+                          
+    % Get voltages
+    vi = fwd_solve(imgd);
+    vMIX(:,i - delOffset) = vi.meas;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
@@ -333,37 +333,37 @@ for i = delOffset + 1:tSize
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-%     % VRS
-%     % Assume no blood-related conductivity changes
-%     sigmaLungNow = sigmaLungVentNow;
-%     
-%     % Assign conductivities to FEM elements
-%     imgd.elem_data = compOffset     + ...
-%                      + sigmaBkg     * (bkgIdxs | chbrIdxs | myocIdxs)...
-%                      + sigmaLungNow .* llungIdxs...
-%                      + sigmaLungNow .* rlungIdxs;
-%                
-%     % Get voltages
-%     vi = fwd_solve(imgd);
-%     vVRS(:,i - delOffset) = vi.meas;
+    % VRS
+    % Assume no blood-related conductivity changes
+    sigmaLungNow = sigmaLungVentNow;
+    
+    % Assign conductivities to FEM elements
+    imgd.elem_data = compOffset     + ...
+                     + sigmaBkg     * (bkgIdxs | chbrIdxs | myocIdxs)...
+                     + sigmaLungNow .* llungIdxs...
+                     + sigmaLungNow .* rlungIdxs;
+               
+    % Get voltages
+    vi = fwd_solve(imgd);
+    vVRS(:,i - delOffset) = vi.meas;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-%     % CRS
-%     % Assume no respiration-related conductivity changes
-%     sigmaLungNow = sigmaBloodNow;
-%     
-%     % Assign conductivities to FEM elements
-%     imgd.elem_data = compOffset     + ...
-%                    + sigmaBkg       * bkgIdxs...
-%                    + sigmaLungNow   .* llungIdxs...
-%                    + sigmaLungNow   .* rlungIdxs ...
-%                    + sigmaBlood     * chbrIdxs...
-%                    + sigmaMuscle    * myocIdxs;
-%                
-%     % Get voltages
-%     vi = fwd_solve(imgd);
-%     vCRS(:,i - delOffset) = vi.meas;
+    % CRS
+    % Assume no respiration-related conductivity changes
+    sigmaLungNow = sigmaBloodNow;
+    
+    % Assign conductivities to FEM elements
+    imgd.elem_data = compOffset     + ...
+                   + sigmaBkg       * bkgIdxs...
+                   + sigmaLungNow   .* llungIdxs...
+                   + sigmaLungNow   .* rlungIdxs ...
+                   + sigmaBlood     * chbrIdxs...
+                   + sigmaMuscle    * myocIdxs;
+               
+    % Get voltages
+    vi = fwd_solve(imgd);
+    vCRS(:,i - delOffset) = vi.meas;
     
     disp(["Sample " + num2str(i) + "/" + num2str(tSize)]);
 end
