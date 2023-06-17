@@ -1,0 +1,9 @@
+TODO:
+- Introduce amplitude modulation constant on synthesizer
+- Use two ventricle volume curves (for each side), modulated oppositely and weight averaged according to relative ventricular volumes
+- Remove spontaneous option
+- Derive flow only after expansion of volumes
+- Use vessel branches (number and dimensions) from Singhal et al. (1973) instead of segments and elements from Strahler
+- Use better heart with two atria and two ventricles
+- Use aorta and pulmonary artery as vertical vessels
+- Add quasi-static venous volumes in arterial tree
