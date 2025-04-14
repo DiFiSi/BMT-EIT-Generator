@@ -1,3 +1,4 @@
+[CURRENTLY UNDER RENOVATION FOR EVEN FASTER SIMULATION]
 Fast generator of cardiac and respiratory mixed electrical impedance tomography (EIT) recordings first introduced in [Fast 4D FEM Model for EIT Source Separation Benchmarking](https://www.degruyterbrill.com/document/doi/10.1515/cdbme-2023-1097/html) - distinguished among best papers in [BMT2023](https://bmt2023.de/).  
 
 This model was designed for computational speed and practicality. It could provide a reliable benchmark for evaluating cardiac and respiratory source separation algorithms as well as allow quick, realistic simulation of various physiological scenarios for developing and training more sophisticated algorithms (e.g., Deep Learning).
