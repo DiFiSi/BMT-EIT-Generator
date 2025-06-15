@@ -22,3 +22,10 @@ Realistic physiological mixing is achieved by:
 * Using Maxwell Garnett’s mixing formula for precise conductivity mixtures.
 
 ![sections_final](https://github.com/user-attachments/assets/7005bb90-ed88-4124-956e-1ef93a330f12)
+
+## Folder Structure
+Running simulations is possible through the script .\main.m, which calls the generator functions, and logs progress in .\simLog.txt.
+* Generator functions are found in .\code (.\code\cond - conductivity mixing, .\code\fem - controlling FEM model, .\code\load - load simulation parameters, .\code\synth -  synthesize time dynamics, .\code\utils - auxiliary functions)
+* Third-party auxiliaryy functions are found in .\others
+* Simulation results are stored in .\results
+* Simulation variables are declared in .\vars
